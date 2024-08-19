@@ -1,3 +1,91 @@
+function simpleEl(type, className) {
+	const el = document.createElement(type);
+	el.className = className;
+	return el;
+}
+
+function simpleButton(inner ,action) {
+	const btn = document.createElement('button');
+	btn.innerHTML = inner;
+	btn.onclick = action;
+	return btn;
+}
+
+function labelAssign(key) {
+	let label_value;
+	switch(key) {
+		case 'model':
+			label_value = 'مدل گوشی';
+			break;
+		case 'lcd_price':
+			label_value = 'ال سی دی';
+			break;
+		case 'lcd_rep_99':
+			label_value = 'تعمیر 99%';
+			break;
+		case 'lcd_rep_100':
+			label_value = 'تعمیر 100%';
+			break;
+		case 'back_door':
+			label_value = 'درب پشت';
+			break;
+		case 'battery':
+			label_value = 'باتری';
+			break;
+		default:
+			label_value = key;
+	}
+	return label_value;
+}
+
+function simpleField(key, value) {
+	// Create label
+	const label = document.createElement('label');
+	label.textContent = labelAssign(key) + ':';
+	// Create input box
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.id = key;
+	if (value) {
+		input.value = value;
+	} else {
+		input.placeholder = labelAssign(key);
+	}
+	return { label, input };
+}
+
+function simpleItem(item, newItem, showForm) {
+	const div0 = simpleEl('div', 'el');
+	div0.appendChild(simpleEl('hr', 'divider'));
+	// Import all of the data fields
+	for (const key in item) {
+		const div1 = simpleEl('div', 'fl');
+		let value = null;
+		if (!newItem) {
+			value = item[key];
+		}
+		const field = simpleField(key, value);
+		const label = field.label;
+		div1.appendChild(label);
+		const input = field.input;
+		div1.appendChild(input);
+		div0.appendChild(div1);
+	}
+	div0.appendChild(simpleButton('Remove', function() { div0.remove(); }));
+	div0.appendChild(simpleEl('hr', 'divider'));
+	// Append item to the showForm
+	showForm.appendChild(div0);
+}
+
+function removeFadeOut(el, speed) {
+    var seconds = speed / 1000;
+    el.style.transition = "opacity " + seconds + "s ease";
+    el.style.opacity = 0;
+    setTimeout(function() {
+        el.parentNode.removeChild(el);
+    }, speed);
+}
+
 function parseJSON() {
     const jsonInput = document.getElementById('jsonInput').value;
 	const jsonName = document.getElementById('jsonName').value;
@@ -10,76 +98,22 @@ function parseJSON() {
     }
     const showForm = document.getElementById('jsonForm');
 	showForm.innerHTML = '';
-	
 	// Import all data
     if (jsonData[jsonName] && jsonData[jsonName].length > 0) {
         const arr = jsonData[jsonName]; 
 		// Import single data
 		for (let i = 0; i < arr.length; i++) {
-			arrElement = arr[i];
-			const div0 = document.createElement('div');
-			div0.className = 'el';
-			// Add the top divider
-			const topDivider = document.createElement('hr');
-			topDivider.className = 'divider';
-			div0.appendChild(topDivider);
-			// Import all of the data fields
-			for (const key in arrElement) {
-				const value = arrElement[key];
-				const label = document.createElement('label');
-				let label_value;
-				switch(key) {
-					case 'model':
-						label_value = 'مدل گوشی';
-						break;
-					case 'lcd_price':
-						label_value = 'ال سی دی';
-						break;
-					case 'lcd_rep_99':
-						label_value = 'تعمیر 99%';
-						break;
-					case 'lcd_rep_100':
-						label_value = 'تعمیر 100%';
-						break;
-					case 'back_door':
-						label_value = 'درب پشت';
-						break;
-					case 'battery':
-						label_value = 'باتری';
-						break;
-					default:
-						label_value = key;
-				}
-				label.textContent = label_value + ':';
-				const input = document.createElement('input');
-				input.type = 'text';
-				input.id = key;
-				input.value = value;
-				const div1 = document.createElement('div');
-				div1.className = 'fl';
-				div1.appendChild(label);
-				div1.appendChild(input);
-				div0.appendChild(div1);
-			}
-			// Add the bottom divider
-			const bottomDivider = document.createElement('hr');
-			bottomDivider.className = 'divider';
-			div0.appendChild(bottomDivider);
-			// Append element to the showForm
-			showForm.appendChild(div0);
-			showForm.appendChild(document.createElement('br'));
+			simpleItem(arr[i], false, showForm);
 		}
 		// Add action buttons
 		const actions = document.getElementById('actions');
 		actions.innerHTML = '';
-		const add = document.createElement('button');
-		add.innerHTML = 'Add';
-		add.onclick = addItem;
-		const extract = document.createElement('button');
-		extract.innerHTML = 'Extract';
-		extract.onclick = extractJSON;
-		actions.appendChild(add);
-		actions.appendChild(extract);
+		actions.appendChild(simpleButton('Add', addItem));
+		actions.appendChild(simpleButton('Extract', extractJSON));
+		const c = document.getElementById('c');
+		if (c) {
+			removeFadeOut(document.getElementById('c'), 2000);
+		}
     } else {
         alert('No data found!');
     }
@@ -98,57 +132,7 @@ function addItem() {
     const showForm = document.getElementById('jsonForm');
 	// Import keys
     if (jsonData[jsonName] && jsonData[jsonName].length > 0) {
-		arrElement = jsonData[jsonName][0];
-		const div0 = document.createElement('div');
-		div0.className = 'el';
-		// Add the top divider
-		const topDivider = document.createElement('hr');
-		topDivider.className = 'divider';
-		div0.appendChild(topDivider);
-		// Import required fields
-		for (const key in arrElement) {
-			const label = document.createElement('label');
-			let label_value;
-			switch(key) {
-				case 'model':
-					label_value = 'مدل گوشی';
-					break;
-				case 'lcd_price':
-					label_value = 'ال سی دی';
-					break;
-				case 'lcd_rep_99':
-					label_value = 'تعمیر 99%';
-					break;
-				case 'lcd_rep_100':
-					label_value = 'تعمیر 100%';
-					break;
-				case 'back_door':
-					label_value = 'درب پشت';
-					break;
-				case 'battery':
-					label_value = 'باتری';
-					break;
-				default:
-					lable_value = key;
-			}
-			label.textContent = label_value + ':';
-			const input = document.createElement('input');
-			input.type = 'text';
-			input.id = key;
-			input.placeholder = key;
-			const div1 = document.createElement('div');
-			div1.className = 'fl';
-			div1.appendChild(label);
-			div1.appendChild(input);
-			div0.appendChild(div1);
-        }
-		// Add the bottom divider
-		const bottomDivider = document.createElement('hr');
-		bottomDivider.className = 'divider';
-		div0.appendChild(bottomDivider);
-		// Append element to the showForm
-		showForm.appendChild(div0);
-		showForm.appendChild(document.createElement('br'));
+		simpleItem(jsonData[jsonName][0], true, showForm);
     } else {
         alert('No data found!');
     }
