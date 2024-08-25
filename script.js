@@ -1,94 +1,67 @@
 function simpleEl(type, className) {
-	const el = document.createElement(type);
-	el.className = className;
-	return el;
+    const el = document.createElement(type);
+    el.className = className;
+    return el;
 }
 
-function simpleButton(inner ,action) {
-	const btn = document.createElement('button');
-	btn.innerHTML = inner;
-	btn.onclick = action;
-	return btn;
-}
-
-function labelAssign(key) {
-	let label_value;
-	switch(key) {
-		case 'model':
-			label_value = 'مدل گوشی';
-			break;
-		case 'lcd_price':
-			label_value = 'ال سی دی';
-			break;
-		case 'lcd_rep_99':
-			label_value = 'تعمیر 99%';
-			break;
-		case 'lcd_rep_100':
-			label_value = 'تعمیر 100%';
-			break;
-		case 'back_door':
-			label_value = 'درب پشت';
-			break;
-		case 'battery':
-			label_value = 'باتری';
-			break;
-		default:
-			label_value = key;
-	}
-	return label_value;
+function simpleButton(inner, action) {
+    const btn = document.createElement('button');
+    btn.innerHTML = inner;
+    btn.onclick = action;
+    return btn;
 }
 
 function simpleField(key, value) {
-	// Create label
-	const label = document.createElement('label');
-	label.textContent = labelAssign(key) + ':';
-	// Create input box
-	const input = document.createElement('input');
-	input.type = 'text';
-	input.id = key;
-	if (value) {
-		input.value = value;
-	} else {
-		input.placeholder = labelAssign(key);
-	}
-	return { label, input };
+    // Create label
+    const label = document.createElement('label');
+    label.textContent = key + ':';
+    // Create input box
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = key;
+    if (value) {
+        input.value = value;
+    } else {
+        input.placeholder = key;
+    }
+    return { label, input };
 }
 
 function simpleItem(item, newItem, showForm) {
-	const div0 = simpleEl('div', 'el');
-	div0.appendChild(simpleEl('hr', 'divider'));
-	// Import all of the data fields
-	for (const key in item) {
-		const div1 = simpleEl('div', 'fl');
-		let value = null;
-		if (!newItem) {
-			value = item[key];
-		}
-		const field = simpleField(key, value);
-		const label = field.label;
-		div1.appendChild(label);
-		const input = field.input;
-		div1.appendChild(input);
-		div0.appendChild(div1);
-	}
-	div0.appendChild(simpleButton('Remove', function() { div0.remove(); }));
-	div0.appendChild(simpleEl('hr', 'divider'));
-	// Append item to the showForm
-	showForm.appendChild(div0);
+    const div0 = simpleEl('div', 'el');
+    div0.appendChild(simpleEl('hr', 'divider'));
+    // Import all of the data fields
+    for (const key in item) {
+        const div1 = simpleEl('div', 'fl');
+        let value = null;
+        if (!newItem) {
+            value = item[key];
+        }
+        const field = simpleField(key, value);
+        const label = field.label;
+        div1.appendChild(label);
+        const input = field.input;
+        div1.appendChild(input);
+        div0.appendChild(div1);
+    }
+    div0.appendChild(simpleButton('Remove', function () { div0.remove(); }));
+    div0.appendChild(simpleEl('hr', 'divider'));
+    // Append item to the showForm
+    showForm.appendChild(div0);
 }
 
 function removeFadeOut(el, speed) {
     var seconds = speed / 1000;
     el.style.transition = "opacity " + seconds + "s ease";
     el.style.opacity = 0;
-    setTimeout(function() {
+    setTimeout(function () {
         el.parentNode.removeChild(el);
     }, speed);
 }
 
 function parseJSON() {
     const jsonInput = document.getElementById('jsonInput').value;
-	const jsonName = document.getElementById('jsonName').value;
+    const jsonName = document.getElementById('jsonName').value;
     let jsonData;
     try {
         jsonData = JSON.parse(jsonInput);
@@ -97,23 +70,23 @@ function parseJSON() {
         return;
     }
     const showForm = document.getElementById('jsonForm');
-	showForm.innerHTML = '';
-	// Import all data
+    showForm.innerHTML = '';
+    // Import all data
     if (jsonData[jsonName] && jsonData[jsonName].length > 0) {
-        const arr = jsonData[jsonName]; 
-		// Import single data
-		for (let i = 0; i < arr.length; i++) {
-			simpleItem(arr[i], false, showForm);
-		}
-		// Add action buttons
-		const actions = document.getElementById('actions');
-		actions.innerHTML = '';
-		actions.appendChild(simpleButton('Add', addItem));
-		actions.appendChild(simpleButton('Extract', extractJSON));
-		const c = document.getElementById('c');
-		if (c) {
-			removeFadeOut(document.getElementById('c'), 2000);
-		}
+        const arr = jsonData[jsonName];
+        // Import single data
+        for (let i = 0; i < arr.length; i++) {
+            simpleItem(arr[i], false, showForm);
+        }
+        // Add action buttons
+        const actions = document.getElementById('actions');
+        actions.innerHTML = '';
+        actions.appendChild(simpleButton('Add', addItem));
+        actions.appendChild(simpleButton('Extract', extractJSON));
+        const c = document.getElementById('c');
+        if (c) {
+            removeFadeOut(document.getElementById('c'), 2000);
+        }
     } else {
         alert('No data found!');
     }
@@ -121,7 +94,7 @@ function parseJSON() {
 
 function addItem() {
     const jsonInput = document.getElementById('jsonInput').value;
-	const jsonName = document.getElementById('jsonName').value;
+    const jsonName = document.getElementById('jsonName').value;
     let jsonData;
     try {
         jsonData = JSON.parse(jsonInput);
@@ -130,9 +103,9 @@ function addItem() {
         return;
     }
     const showForm = document.getElementById('jsonForm');
-	// Import keys
+    // Import keys
     if (jsonData[jsonName] && jsonData[jsonName].length > 0) {
-		simpleItem(jsonData[jsonName][0], true, showForm);
+        simpleItem(jsonData[jsonName][0], true, showForm);
     } else {
         alert('No data found!');
     }
@@ -154,11 +127,11 @@ function extractJSON() {
             const input = inputs[j];
             const key = input.id;
             const value = input.value;
-			// Adding the key and value
-            obj[key] = value;  
+            // Adding the key and value
+            obj[key] = value;
         }
         // Adding the object to the array
-        extractedData.push(obj);  
+        extractedData.push(obj);
     }
     // Creating JSON object
     const result = {};
@@ -170,4 +143,21 @@ function extractJSON() {
     finalLink.href = URL.createObjectURL(blob);
     finalLink.download = 'output.json';
     finalLink.click();
+}
+
+function template() {
+    const jsonTemplate = 
+    {
+        "template":[
+            {
+                "field1":"value1",
+                "field2":"value2",
+                "field3":"value3",
+                "field4":"value4"
+            }
+        ]
+    };
+    document.getElementById('jsonInput').value = JSON.stringify(jsonTemplate, null, 4);
+    document.getElementById('jsonName').value = "template";
+    parseJSON();
 }

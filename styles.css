@@ -28,8 +28,8 @@ canvas {
 }
 
 textarea, input[type="text"] {
-	font-family: "Jersey 10", sans-serif;
-	font-size: 22px;
+	font-family: "Vazirmatn", sans-serif;
+	font-size: 18px;
 	padding: 10px;
     margin: 10px 0;
     width: 100%;
@@ -46,7 +46,7 @@ textarea:focus, input[type="text"]:focus {
 }
 
 textarea::placeholder, input[type="text"]::placeholder {
-	color: #00FF41;
+	color: rgba(0, 255, 65, 0.5);
 }
 
 button {
@@ -87,10 +87,9 @@ button:hover {
 }
 
 label {
-	font-family: "Lalezar", sans-serif;
 	margin-left: 5px;
 	width: 25%;
-	font-size: 18px;
+	font-size: 22px;
 	color: #00FF41;
 }
 
